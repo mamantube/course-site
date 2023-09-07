@@ -22,9 +22,28 @@ const getCourses = () => {
     return response;
 }
 
+const updateCourse = (courseId, payload) => {
+    const listCourses = storageManager.get();
+    const updateCourse = listCourses.map((item) => {
+        if (item.id === courseId) {
+            return {
+                ...item,
+                ...payload,
+            }
+        }
+        return item
+    })
+
+    storageManager.set(updateCourse);
+    return {
+        data: payload
+    }
+}
+
 const courseService = {
     addCourse,
     getCourses,
+    updateCourse,
 }
 
 export default courseService;

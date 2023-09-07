@@ -3,10 +3,13 @@ import AddModal from "./components/AddModal";
 import { useState } from "react";
 import courseService from "./utils/Service";
 import { useEffect } from "react";
+import CourseEditModal from "./components/CourseEditModal";
 
 const MateriCRUD = () => {
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [courses, setCourses] = useState ([]);
+    const [selectedCourse, setSelectedCourse] = useState ({});
+    const [showEditModal, setShowEditModal] = useState (false);
 
 
     const toggleCreateModal = () => {
@@ -20,6 +23,22 @@ const MateriCRUD = () => {
     const fetchCourses = () => {
         const result = courseService.getCourses();
         setCourses(result.data);
+    }
+
+    const openEditModal = (payload) => {
+        setSelectedCourse(payload);
+        setShowEditModal(true);
+    }
+    const closeEditModal = () => {
+        setSelectedCourse({});
+        setShowEditModal(false);
+    }
+
+    const handleEditCourse = (payload) => {
+        const {id, ...otherPayload} = payload;
+        courseService.updateCourse(id, otherPayload);
+        closeEditModal();
+        fetchCourses();
     }
 
     useEffect(() => {
@@ -46,7 +65,7 @@ const MateriCRUD = () => {
                                         <td>{index + 1}</td>
                                         <td>{item.title}</td>
                                         <td>{item.description}</td>
-                                        <td></td>
+                                        <td><Button onClick={() => openEditModal(item)} variant="warning">Edit</Button></td>
                                     </tr>
                                 )
                             })}
@@ -55,6 +74,7 @@ const MateriCRUD = () => {
                 </Col>
             </Row>
             <AddModal show={showCreateModal} handleClose={toggleCreateModal} handleSubmit={handleAddCourse} />
+            <CourseEditModal show={showEditModal} handleClose={closeEditModal} handleSubmit={handleEditCourse} data={selectedCourse} />
         </Container>
     );
 }
