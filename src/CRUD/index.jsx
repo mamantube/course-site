@@ -2,17 +2,29 @@ import { Container, Row, Col, Table, Button } from "react-bootstrap";
 import AddModal from "./components/AddModal";
 import { useState } from "react";
 import courseService from "./utils/Service";
+import { useEffect } from "react";
 
 const MateriCRUD = () => {
     const [showCreateModal, setShowCreateModal] = useState(false);
+    const [courses, setCourses] = useState ([]);
+
 
     const toggleCreateModal = () => {
         setShowCreateModal(!showCreateModal)
     }
     const handleAddCourse = (payload) => {
         courseService.addCourse(payload);
+        fetchCourses();
         toggleCreateModal();
     }
+    const fetchCourses = () => {
+        const result = courseService.getCourses();
+        setCourses(result.data);
+    }
+
+    useEffect(() => {
+        fetchCourses();
+    }, []);
     return (
         <Container style={{paddingTop: "50px"}}>
             <Row>
@@ -28,24 +40,16 @@ const MateriCRUD = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>Course 1</td>
-                                <td>Deskripsi Course 1</td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>Course 2</td>
-                                <td>Deskripsi Course 2</td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>Course 3</td>
-                                <td>Deskripsi Course 3</td>
-                                <td></td>
-                            </tr>
+                            {courses.map((item, index) => {
+                                return (
+                                    <tr key={item.id}>
+                                        <td>{index + 1}</td>
+                                        <td>{item.title}</td>
+                                        <td>{item.description}</td>
+                                        <td></td>
+                                    </tr>
+                                )
+                            })}
                         </tbody>
                     </Table>
                 </Col>

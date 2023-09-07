@@ -14,8 +14,17 @@ const addCourse = (payload) => {
     }
 }
 
+const getCourses = () => {
+    const result = storageManager.get();
+    const response = {
+        data: result !== null ? result : [],
+    }
+    return response;
+}
+
 const courseService = {
-    addCourse
+    addCourse,
+    getCourses,
 }
 
 export default courseService;
