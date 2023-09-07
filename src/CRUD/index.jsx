@@ -1,12 +1,17 @@
 import { Container, Row, Col, Table, Button } from "react-bootstrap";
 import AddModal from "./components/AddModal";
 import { useState } from "react";
+import courseService from "./utils/Service";
 
 const MateriCRUD = () => {
     const [showCreateModal, setShowCreateModal] = useState(false);
 
     const toggleCreateModal = () => {
         setShowCreateModal(!showCreateModal)
+    }
+    const handleAddCourse = (payload) => {
+        courseService.addCourse(payload);
+        toggleCreateModal();
     }
     return (
         <Container style={{paddingTop: "50px"}}>
@@ -45,7 +50,7 @@ const MateriCRUD = () => {
                     </Table>
                 </Col>
             </Row>
-            <AddModal show={showCreateModal} handleClose={toggleCreateModal} handleSubmit={() => {}} />
+            <AddModal show={showCreateModal} handleClose={toggleCreateModal} handleSubmit={handleAddCourse} />
         </Container>
     );
 }
