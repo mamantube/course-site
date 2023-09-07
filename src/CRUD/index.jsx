@@ -4,12 +4,14 @@ import { useState } from "react";
 import courseService from "./utils/Service";
 import { useEffect } from "react";
 import CourseEditModal from "./components/CourseEditModal";
+import CourseDeleteModal from "./components/CourseDelete.Modal";
 
 const MateriCRUD = () => {
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [courses, setCourses] = useState ([]);
     const [selectedCourse, setSelectedCourse] = useState ({});
     const [showEditModal, setShowEditModal] = useState (false);
+    const [showDeleteModal, setShowDeleteModal] = useState (false);
 
 
     const toggleCreateModal = () => {
@@ -41,6 +43,23 @@ const MateriCRUD = () => {
         fetchCourses();
     }
 
+    const openDeleteModal = (payload) => {
+        setSelectedCourse(payload);
+        setShowDeleteModal(true);
+    }
+
+    const closeDeleteModal = () => {
+        setSelectedCourse({});
+        setShowDeleteModal(false);
+    }
+
+    const handleDeleteCourse = () => {
+        const {id} = selectedCourse;
+        courseService.deleteCourse(id);
+        fetchCourses();
+        closeDeleteModal();
+    }
+
     useEffect(() => {
         fetchCourses();
     }, []);
@@ -66,6 +85,8 @@ const MateriCRUD = () => {
                                         <td>{item.title}</td>
                                         <td>{item.description}</td>
                                         <td><Button onClick={() => openEditModal(item)} variant="warning">Edit</Button></td>
+                                        {""}
+                                        <td><Button onClick={() => openDeleteModal(item)} variant="danger">Hapus</Button></td>
                                     </tr>
                                 )
                             })}
@@ -75,6 +96,7 @@ const MateriCRUD = () => {
             </Row>
             <AddModal show={showCreateModal} handleClose={toggleCreateModal} handleSubmit={handleAddCourse} />
             <CourseEditModal show={showEditModal} handleClose={closeEditModal} handleSubmit={handleEditCourse} data={selectedCourse} />
+            <CourseDeleteModal show={showDeleteModal} handleClose={closeDeleteModal} onAgree = {handleDeleteCourse} />
         </Container>
     );
 }

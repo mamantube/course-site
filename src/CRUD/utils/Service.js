@@ -40,10 +40,18 @@ const updateCourse = (courseId, payload) => {
     }
 }
 
+const deleteCourse = (courseId) => {
+    const listCourses = storageManager.get();
+    const newList = listCourses.filter((item) => item.id !== courseId)
+
+    storageManager.set(newList);
+}
+
 const courseService = {
     addCourse,
     getCourses,
     updateCourse,
+    deleteCourse,
 }
 
 export default courseService;
